@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.title }} - CourseHub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>{{ course.title }}</h1>
+            {% if course.category %}
+            <p class="text-muted">Category: {{ course.category.name }}</p>
+            {% endif %}
+            
+            {% if course.thumbnail %}
+            <img src="{{ course.thumbnail.url }}" class="img-fluid mb-4 rounded" alt="{{ course.title }}">
+            {% else %}
+            <div class="bg-gradient mb-4 rounded" style="height: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+            {% endif %}
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>About this course</h5>
+                    <p>{{ course.full_description|linebreaks }}</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h5>Course Content</h5>
+                    <ul class="list-group list-group-flush">
+                        {% for content in contents %}
+                        <li class="list-group-item">
+                            <i class="bi bi-{% if content.content_type == 'video' %}play-circle{% elif content.content_type == 'pdf' %}file-pdf{% else %}file-text{% endif %}"></i>
+                            {{ content.title }}
+                            {% if content.duration %}
+                                <span class="text-muted">({{ content.duration }} mins)</span>
+                            {% endif %}
+                            {% if content.is_preview %}
+                                <span class="badge bg-info">Preview</span>
+                            {% endif %}
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item">Course content will be added soon!</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h3 class="card-title">
+                        {% if course.is_free %}
+                            <span class="text-success">FREE</span>
+                        {% else %}
+                            ₹{{ course.price }}
+                        {% endif %}
+                    </h3>
+                    
+                    {% if user.is_authenticated %}
+                        {% if is_enrolled %}
+                            <a href="{% url 'course_content' course.slug %}" class="btn btn-success w-100 mb-2">
+                                <i class="bi bi-play-fill"></i> Continue Learning
+                            </a>
+                        {% elif has_pending_purchase %}
+                            <button class="btn btn-warning w-100 mb-2" disabled>
+                                <i class="bi bi-clock"></i> Purchase Pending
+                            </button>
+                            <small class="text-muted">Your payment is being verified</small>
+                        {% elif course.is_free %}
+                            <a href="{% url 'course_content' course.slug %}" class="btn btn-success w-100 mb-2">
+                                <i class="bi bi-play-fill"></i> Start Learning
+                            </a>
+                        {% else %}
+                            <a href="{% url 'purchase_course' course.slug %}" class="btn btn-primary w-100 mb-2">
+                                <i class="bi bi-cart"></i> Purchase Course
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'course_detail' course.slug %}" class="btn btn-primary w-100 mb-2">
+                            Login to Enroll
+                        </a>
+                    {% endif %}
+                    
+                    <hr>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle text-success"></i> Lifetime access</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Certificate of completion</li>
+                        <li><i class="bi bi-check-circle text-success"></i> {{ contents.count }} lessons</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-4">Welcome to CourseHub</h1>
+        <p class="lead mb-4">Discover amazing courses to boost your skills</p>
+        <a href="{% url 'course_list' %}" class="btn btn-light btn-lg">Browse Courses</a>
+    </div>
+</section>
+
+<!-- Featured Courses -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Featured Courses</h2>
+        <div class="row">
+            {% for course in featured_courses %}
+            <div class="col-md-4 mb-4">
+                <div class="card course-card">
+                    {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}">
+                    {% else %}
+                        <div class="card-img-top bg-gradient" style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                    {% endif %}
+                    <div class="card-body">
+                        <span class="badge {% if course.is_free %}badge-free{% else %}badge-paid{% endif %} mb-2">
+                            {% if course.is_free %}FREE{% else %}₹{{ course.price }}{% endif %}
+                        </span>
+                        <h5 class="card-title">{{ course.title }}</h5>
+                        <p class="card-text">{{ course.short_description|truncatewords:20 }}</p>
+                        <a href="{% url 'course_detail' course.slug %}" class="btn btn-primary">View Course</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <h4>No featured courses yet</h4>
+                    <p>Check back soon for featured courses!</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Free Courses Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Free Courses</h2>
+        <div class="row">
+            {% for course in free_courses %}
+            <div class="col-md-4 mb-4">
+                <div class="card course-card">
+                    {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}">
+                    {% else %}
+                        <div class="card-img-top bg-success" style="height: 200px; opacity: 0.8;"></div>
+                    {% endif %}
+                    <div class="card-body">
+                        <span class="badge badge-free mb-2">FREE</span>
+                        <h5 class="card-title">{{ course.title }}</h5>
+                        <p class="card-text">{{ course.short_description|truncatewords:20 }}</p>
+                        <a href="{% url 'course_detail' course.slug %}" class="btn btn-success">Start Learning</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <h4>No free courses available yet</h4>
+                    <p>We're adding free courses soon!</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Paid Courses Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Premium Courses</h2>
+        <div class="row">
+            {% for course in paid_courses %}
+            <div class="col-md-4 mb-4">
+                <div class="card course-card">
+                    {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}">
+                    {% else %}
+                        <div class="card-img-top bg-warning" style="height: 200px; opacity: 0.8;"></div>
+                    {% endif %}
+                    <div class="card-body">
+                        <span class="badge badge-paid mb-2">₹{{ course.price }}</span>
+                        <h5 class="card-title">{{ course.title }}</h5>
+                        <p class="card-text">{{ course.short_description|truncatewords:20 }}</p>
+                        <a href="{% url 'course_detail' course.slug %}" class="btn btn-warning">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <h4>No premium courses available yet</h4>
+                    <p>Premium courses coming soon!</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

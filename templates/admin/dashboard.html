@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - CourseHub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Admin Dashboard</h2>
+    
+    <!-- Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <h2>{{ stats.total_users }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Total Courses</h5>
+                    <h2>{{ stats.total_courses }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Purchases</h5>
+                    <h2>{{ stats.pending_purchases }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Total Enrollments</h5>
+                    <h2>{{ stats.total_enrollments }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pending Purchases -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Pending Purchase Requests</h5>
+        </div>
+        <div class="card-body">
+            {% if pending_purchases %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Course</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Screenshot</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchase in pending_purchases %}
+                    <tr>
+                        <td>{{ purchase.user.email }}</td>
+                        <td>{{ purchase.course.title }}</td>
+                        <td>₹{{ purchase.course.price }}</td>
+                        <td>{{ purchase.created_at|date:"d M Y" }}</td>
+                        <td>
+                            <a href="{{ purchase.screenshot.url }}" target="_blank" class="btn btn-sm btn-info">View</a>
+                        </td>
+                        <td>
+                            <a href="{% url 'approve_purchase' purchase.id %}" class="btn btn-sm btn-success">Approve</a>
+                            <a href="{% url 'reject_purchase' purchase.id %}" class="btn btn-sm btn-danger">Reject</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No pending purchase requests.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

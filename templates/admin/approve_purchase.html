@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Approve Purchase - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Approve Purchase Request</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">User:</dt>
+                        <dd class="col-sm-9">{{ purchase.user.email }}</dd>
+                        
+                        <dt class="col-sm-3">Course:</dt>
+                        <dd class="col-sm-9">{{ purchase.course.title }}</dd>
+                        
+                        <dt class="col-sm-3">Amount:</dt>
+                        <dd class="col-sm-9">₹{{ purchase.course.price }}</dd>
+                        
+                        <dt class="col-sm-3">Transaction ID:</dt>
+                        <dd class="col-sm-9">{{ purchase.transaction_id|default:"Not provided" }}</dd>
+                    </dl>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="comments" class="form-label">Admin Comments (Optional)</label>
+                            <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success">Approve Purchase</button>
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

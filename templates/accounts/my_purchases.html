@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}My Purchases - CourseHub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">My Purchase History</h2>
+    
+    {% if purchases %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Price</th>
+                        <th>Date</th>
+                        <th>Transaction ID</th>
+                        <th>Status</th>
+                        <th>Comments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchase in purchases %}
+                    <tr>
+                        <td>{{ purchase.course.title }}</td>
+                        <td>₹{{ purchase.course.price }}</td>
+                        <td>{{ purchase.created_at|date:"d M Y, h:i A" }}</td>
+                        <td>{{ purchase.transaction_id|default:"-" }}</td>
+                        <td>
+                            {% if purchase.status == 'pending' %}
+                                <span class="badge bg-warning">Pending Review</span>
+                            {% elif purchase.status == 'approved' %}
+                                <span class="badge bg-success">Approved</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ purchase.admin_comments|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h4>No Purchases Yet</h4>
+            <p>You haven't made any course purchases yet.</p>
+            <a href="{% url 'course_list' %}" class="btn btn-primary">Browse Courses</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

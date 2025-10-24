@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}My Courses - CourseHub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">My Courses</h2>
+    
+    {% if enrollments %}
+        <div class="row">
+            {% for enrollment in enrollments %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if enrollment.course.thumbnail %}
+                        <img src="{{ enrollment.course.thumbnail.url }}" class="card-img-top" alt="{{ enrollment.course.title }}">
+                    {% else %}
+                        <div class="card-img-top bg-gradient" style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ enrollment.course.title }}</h5>
+                        <p class="card-text">{{ enrollment.course.short_description|truncatewords:15 }}</p>
+                        <p class="text-muted small">Enrolled: {{ enrollment.enrolled_at|date:"d M Y" }}</p>
+                        <a href="{% url 'course_content' enrollment.course.slug %}" class="btn btn-primary">Continue Learning</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h4>No Courses Yet</h4>
+            <p>You haven't enrolled in any courses yet.</p>
+            <a href="{% url 'course_list' %}" class="btn btn-primary">Browse Courses</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

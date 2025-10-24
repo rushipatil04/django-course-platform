@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Purchase {{ course.title }} - CourseHub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Purchase Course: {{ course.title }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Payment Instructions</h5>
+                            <ol>
+                                <li>Scan the QR code or use UPI ID</li>
+                                <li>Pay ₹{{ course.price }}</li>
+                                <li>Take a screenshot of payment</li>
+                                <li>Upload screenshot below</li>
+                            </ol>
+                            
+                            <div class="alert alert-info">
+                                <strong>UPI ID:</strong> merchant@upi<br>
+                                <strong>Amount:</strong> ₹{{ course.price }}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 text-center">
+                            <h5>QR Code for Payment</h5>
+                            <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" class="img-fluid" style="max-width: 250px;">
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="screenshot" class="form-label">Payment Screenshot *</label>
+                            <input type="file" class="form-control" id="screenshot" name="screenshot" accept="image/*" required>
+                            <small class="form-text text-muted">Upload screenshot of successful payment</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="transaction_id" class="form-label">Transaction ID (Optional)</label>
+                            <input type="text" class="form-control" id="transaction_id" name="transaction_id" placeholder="Enter transaction reference number">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Additional Notes (Optional)</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Any additional information"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Submit Payment</button>
+                        <a href="{% url 'course_detail' course.slug %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

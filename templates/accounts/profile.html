@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - CourseHub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
+                        <i class="bi bi-person-fill text-white" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4>{{ user.username }}</h4>
+                    <p class="text-muted">{{ user.email }}</p>
+                    <hr>
+                    <p><small>User ID: {{ user.user_id }}</small></p>
+                    <p><small>Joined: {{ user.date_joined|date:"d M Y" }}</small></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>My Enrolled Courses</h5>
+                </div>
+                <div class="card-body">
+                    {% if user_courses %}
+                        <div class="list-group">
+                            {% for enrollment in user_courses %}
+                            <a href="{% url 'course_content' enrollment.course.slug %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ enrollment.course.title }}</h6>
+                                    <small>{{ enrollment.enrolled_at|date:"d M Y" }}</small>
+                                </div>
+                                <p class="mb-1">{{ enrollment.course.short_description|truncatewords:20 }}</p>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>You haven't enrolled in any courses yet.</p>
+                        <a href="{% url 'course_list' %}" class="btn btn-primary">Browse Courses</a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Purchase Requests</h5>
+                </div>
+                <div class="card-body">
+                    {% if purchase_requests %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for purchase in purchase_requests %}
+                                <tr>
+                                    <td>{{ purchase.course.title }}</td>
+                                    <td>{{ purchase.created_at|date:"d M Y" }}</td>
+                                    <td>
+                                        {% if purchase.status == 'pending' %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% elif purchase.status == 'approved' %}
+                                            <span class="badge bg-success">Approved</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>No purchase requests yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

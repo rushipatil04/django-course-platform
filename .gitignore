@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+.env
+
+# Database
+db.sqlite3
+
+# Media files (user-uploaded content)
+media/
+
+# macOS
+.DS_Store
