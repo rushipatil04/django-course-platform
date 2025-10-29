@@ -56,6 +56,7 @@
                         <th>Course</th>
                         <th>Amount</th>
                         <th>Date</th>
+                        <th>Transaction ID</th>
                         <th>Screenshot</th>
                         <th>Actions</th>
                     </tr>
@@ -67,8 +68,13 @@
                         <td>{{ purchase.course.title }}</td>
                         <td>₹{{ purchase.course.price }}</td>
                         <td>{{ purchase.created_at|date:"d M Y" }}</td>
+                        <td>{{ purchase.transaction_id|default:"-" }}</td>
                         <td>
-                            <a href="{{ purchase.screenshot.url }}" target="_blank" class="btn btn-sm btn-info">View</a>
+                            {% if purchase.screenshot %}
+                                <a href="{{ purchase.screenshot.url }}" target="_blank" class="btn btn-sm btn-info">View</a>
+                            {% else %}
+                                -
+                            {% endif %}
                         </td>
                         <td>
                             <a href="{% url 'approve_purchase' purchase.id %}" class="btn btn-sm btn-success">Approve</a>
@@ -79,7 +85,48 @@
                 </tbody>
             </table>
             {% else %}
-            <p>No pending purchase requests.</p>
+            <p class="text-center">No pending purchase requests.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Recent Purchases -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Recent Purchase Requests (All Statuses)</h5>
+        </div>
+        <div class="card-body">
+            {% if recent_purchases %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Course</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchase in recent_purchases %}
+                    <tr>
+                        <td>{{ purchase.user.email }}</td>
+                        <td>{{ purchase.course.title }}</td>
+                        <td>{{ purchase.created_at|date:"d M Y, h:i A" }}</td>
+                        <td>
+                            {% if purchase.status == 'pending' %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% elif purchase.status == 'approved' %}
+                                <span class="badge bg-success">Approved</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-center">No purchase requests yet.</p>
             {% endif %}
         </div>
     </div>
